@@ -14,7 +14,10 @@ const stadiumSchema = new mongoose.Schema({
     require: true,
   },
   Clubs: {
-    type: [String]
+    type: [String],
+  },
+  Stands: {
+    type: [String],
   },
 });
 

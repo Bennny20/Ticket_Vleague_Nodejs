@@ -19,10 +19,27 @@ export const createRound = async (req, res, next) => {
   }
 };
 
+export const deleteRound = async (req, res, next) => {
+  try {
+    const round = await Round.findById(req.params.id);
+    const tournamentId = round.tournamentId;
+    await Round.findByIdAndDelete(req.params.id);
+    try {
+      await Tournament.findByIdAndUpdate(tournamentId, {
+        $pull: { rounds: req.params.id },
+      });
+    } catch (error) {
+      next(error);
+    }
+    res.status(200).json("Round has been delete");
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getRoundByTournament = async (req, res, next) => {
   try {
     const tournament = await Tournament.findById(req.params.id);
-    // console.log(tournament)
     const rounds = await Promise.all(
       tournament.rounds.map((round) => {
         return Round.findById(round);

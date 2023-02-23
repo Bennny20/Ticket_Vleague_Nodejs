@@ -1,6 +1,5 @@
 import Tournament from "../model/Tournament.js";
 
-
 export const createTournament = async (req, res, next) => {
   const newTournament = new Tournament(req.body);
   try {
@@ -24,3 +23,29 @@ export const updateTournament = async (req, res, next) => {
   }
 };
 
+export const deleteTournament = async (req, res, next) => {
+  try {
+    await Tournament.findByIdAndDelete(req.params.id);
+    res.status(200).json("Tournament has been delete.");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getTournament = async (req, res, next) => {
+  try {
+    const tournament = await Tournament.findById(req.params.id);
+    res.status(200).json(tournament);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllTournament = async (req, res, next) => {
+  try {
+    const tournament = await Tournament.find();
+    res.status(200).json(tournament);
+  } catch (error) {
+    next(error);
+  }
+};
