@@ -31,7 +31,6 @@ export const getClub = async (req, res, next) => {
 export const updateClub = async (req, res, next) => {
   try {
     const clubOid = await Club.findById(req.params.id);
-    console.log(clubOid);
     const stadiumIdOld = clubOid.stadiumId;
     const stadiumId = req.body.stadiumId;
 

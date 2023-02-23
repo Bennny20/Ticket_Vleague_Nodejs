@@ -12,7 +12,11 @@ const matchSchema = new mongoose.Schema({
   },
   stadium: {
     type: String,
-    default: false,
+    default: null,
+  },
+  roundId: {
+    type: String,
+    default: null,
   },
   date: {
     type: Date,
