@@ -10,10 +10,16 @@ import { vertifyAdmin } from "./../utils/vertifyToken.js";
 
 const router = express.Router();
 
+// router.post("/", vertifyAdmin, createStadium);
+// router.put("/:id", vertifyAdmin, updateStadium);
+// router.delete("/:id", vertifyAdmin, deleteStadium);
+// router.get("/:id", vertifyAdmin, getStadium);
+// router.get("/", vertifyAdmin, getAllStadium);
+
 router.post("/", vertifyAdmin, createStadium);
 router.put("/:id", vertifyAdmin, updateStadium);
 router.delete("/:id", vertifyAdmin, deleteStadium);
-router.get("/:id", vertifyAdmin, getStadium);
-router.get("/", vertifyAdmin, getAllStadium);
+router.get("/:id",  getStadium);
+router.get("/", getAllStadium);
 
 export default router;
