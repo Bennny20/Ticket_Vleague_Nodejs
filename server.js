@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
@@ -16,6 +17,7 @@ const URL = `mongodb+srv://PhienTQ:Phiengk20@cluster0.aa1zf9y.mongodb.net/?retry
 const app = express();
 dotenv.config();
 
+app.use(cors())
 const connect = async () => {
   try {
     mongoose.set("strictQuery", false);
@@ -49,6 +51,7 @@ app.use((err, req, res, next) => {
     stack: err.stack,
   });
 });
+
 
 app.listen(8800, () => {
   connect();
