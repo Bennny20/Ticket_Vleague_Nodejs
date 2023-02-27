@@ -1,18 +1,18 @@
 import mongoose from "mongoose";
 
-const StandSchema = new mongoose.Schema({
+const TicketSchema = new mongoose.Schema({
   name: {
     type: String,
     require: true,
   },
-  quantitySeat: {
+  TicketTyoe: {
     type: String,
     require: true,
   },
-  stadiumId: {
+  Desc: {
     type: String,
     require: true,
   },
 });
 
-export default mongoose.model("Stand", StandSchema);
+export default mongoose.model("Ticket", TicketSchema);
