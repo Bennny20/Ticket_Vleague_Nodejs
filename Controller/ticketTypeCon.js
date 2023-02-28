@@ -1,5 +1,6 @@
 import TicketType from "../model/TicketType.js";
 import Stand from "../model/Stand.js";
+import Match from "../model/Match.js";
 import { createError } from "../utils/error.js";
 
 export const createTicketType = async (req, res, next) => {
@@ -15,8 +16,15 @@ export const createTicketType = async (req, res, next) => {
         )
       );
     } else {
-      newTicketType.TicketTypeId = req.params.TicketTypeId;
+      newTicketType.matchId = req.params.matchId;
       const saveTicketType = await newTicketType.save();
+      try {
+        await Match.findByIdAndUpdate(req.params.matchId, {
+          $push: { ticketTypes: saveTicketType._id },
+        });
+      } catch (error) {
+        next(error);
+      }   
       res.status(200).json(saveTicketType);
     }
   } catch (error) {
@@ -48,5 +56,47 @@ export const updateTicketType = async (req, res, next) => {
     res.status(200).json(updateTicketType);
   } catch (error) {
     next(error);
+  }
+};
+
+export const deleteTicketType = async (req, res, next) => {
+  try {
+    await TicketType.findByIdAndDelete(req.params.id);
+    res.status(200).json("TicketType has been delete");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getByMatch = async (req, res, next) => {
+  try {
+    const match = await Match.findById(req.params.matchId);
+    const ticketTypes = await Promise.all(
+      stadium.Stands.map((stand) => {
+        return Stand.findById(stand);
+      })
+    );
+    res.status(200).json(ticketTypes);
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+export const getById = async (req, res, next) => {
+  try {
+    const ticketType = await TicketType.findById(req.params.id);
+    res.status(200).json(ticketType);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getAll = async (req, res, next) => {
+  try {
+    const ticketTypes = await TicketType.find();
+    res.status(200).json(ticketTypes);
+  } catch (err) {
+    next(err);
   }
 };

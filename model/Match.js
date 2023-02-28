@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 const matchSchema = new mongoose.Schema({
   homeClub: {
     type: String,
@@ -21,6 +20,9 @@ const matchSchema = new mongoose.Schema({
   date: {
     type: Date,
     require: true,
+  },
+  ticketTypes: {
+    type: [String],
   },
   status: {
     type: Number,
