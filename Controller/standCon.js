@@ -41,3 +41,35 @@ export const getStand = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updateStand = async (req, res, next) => {
+  try {
+    const updateStand = await Stand.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true }
+    );
+    res.status(200).json(updateStand);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const deleteStand = async (req, res, next) => {
+    try {
+      const stand = await Stand.findById(req.params.id);
+      const stadiumId = stand.stadiumId;
+      await Stand.findByIdAndDelete(req.params.id);
+      try {
+        await Stadium.findByIdAndUpdate(stadiumId, {
+          $pull: { Stands: Stand._id },
+        });
+      } catch (error) {
+        next(error);
+      }
+      res.status(200).json("Stand has been delete");
+    } catch (error) {
+      next(error);
+    }
+  };

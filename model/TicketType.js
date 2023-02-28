@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const TikcetTypeSchema = new mongoose.Schema({
-  matchID: {
+  matchId: {
     type: String,
     require: true,
   },
@@ -23,4 +23,4 @@ const TikcetTypeSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Stand", StandSchema);
+export default mongoose.model("TikcetType", TikcetTypeSchema);
