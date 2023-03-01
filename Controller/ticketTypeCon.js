@@ -72,8 +72,8 @@ export const getByMatch = async (req, res, next) => {
   try {
     const match = await Match.findById(req.params.matchId);
     const ticketTypes = await Promise.all(
-      stadium.Stands.map((stand) => {
-        return Stand.findById(stand);
+      match.ticketTypes.map((type) => {
+        return TicketType.findById(type);
       })
     );
     res.status(200).json(ticketTypes);

@@ -1,13 +1,23 @@
 import Match from "../model/Match.js";
 import Round from "../model/Round.js";
+import Club from "../model/Club.js";
+import Stafium from "../model/Stadium.js";
 
 export const createMatch = async (req, res, next) => {
-  const roundId = req.body.roundId;
   const newMatch = new Match(req.body);
+  const homeClub = await Club.findById(req.body.homeClubId);
+  const awayClub = await Club.findById(req.body.awayClubId);
+  const stadium = await Stafium.findById(req.body.stadiumId);
+  newMatch.nameHomeClub = homeClub.name;
+  newMatch.logoHomeClub = homeClub.logo;
+  newMatch.nameAwayClub = awayClub.name;
+  newMatch.logoAwayClub = awayClub.logo;
+  newMatch.nameStadium = stadium.name;
+  
   try {
     const saveMatch = await newMatch.save();
     try {
-      await Round.findByIdAndUpdate(roundId, {
+      await Round.findByIdAndUpdate(req.body.roundId, {
         $push: { matchs: saveMatch._id },
       });
     } catch (error) {
@@ -23,11 +33,21 @@ export const updateMatch = async (req, res, next) => {
   try {
     const matchOid = await Match.findById(req.params.id);
     const roundOld = matchOid.roundId;
-    const matchId = req.body.roundId;
+    const roundNewId = req.body.roundId;
+    const homeClub = await Club.findById(req.body.homeClubId);
+    const awayClub = await Club.findById(req.body.awayClubId);
+    const stadium = await Stafium.findById(req.body.stadiumId);
 
     const updateMatch = await Match.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      {
+        $set: req.body,
+        nameHomeClub: homeClub.name,
+        logoHomeClub: homeClub.logo,
+        nameAwayClub: awayClub.name,
+        logoAwayClub: awayClub.logo,
+        nameStadium: stadium.name,
+      },
       { new: true }
     );
 
@@ -40,7 +60,7 @@ export const updateMatch = async (req, res, next) => {
     }
 
     try {
-      await Round.findByIdAndUpdate(matchId, {
+      await Round.findByIdAndUpdate(roundNewId, {
         $push: { matchs: updateMatch._id },
       });
     } catch (error) {

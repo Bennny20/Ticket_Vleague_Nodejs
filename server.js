@@ -12,6 +12,7 @@ import clubRoute from "./routes/clubRoute.js";
 import matchRoute from "./routes/matchRoute.js";
 import standRoute from "./routes/standRoute.js";
 import ticketTypeRoute from "./routes/ticketTypeRoute.js";
+import orderRoute from "./routes/orderRoute.js";
 
 const URL = `mongodb+srv://PhienTQ:Phiengk20@cluster0.aa1zf9y.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -40,6 +41,7 @@ app.use("/api/clubs", clubRoute);
 app.use("/api/matchs", matchRoute);
 app.use("/api/stands", standRoute);
 app.use("/api/match/ticketTypes", ticketTypeRoute);
+app.use("/api/order/", orderRoute);
 
 
 

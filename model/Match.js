@@ -1,21 +1,41 @@
 import mongoose from "mongoose";
 
 const matchSchema = new mongoose.Schema({
-  homeClub: {
+  homeClubId: {
     type: String,
-    default: false,
+    require: false,
   },
-  awayClub: {
+  nameHomeClub: {
     type: String,
-    default: false,
+    require: false,
   },
-  stadium: {
+  logoHomeClub: {
     type: String,
-    default: null,
+    require: false,
+  },
+  awayClubId: {
+    type: String,
+    require: false,
+  },
+  nameAwayClub: {
+    type: String,
+    require: false,
+  },
+  logoAwayClub: {
+    type: String,
+    require: false,
+  },
+  stadiumId: {
+    type: String,
+    require: null,
+  },
+  nameStadium: {
+    type: String,
+    require: null,
   },
   roundId: {
     type: String,
-    default: null,
+    require: null,
   },
   date: {
     type: Date,
@@ -26,7 +46,7 @@ const matchSchema = new mongoose.Schema({
   },
   status: {
     type: Number,
-    default: false,
+    require: false,
   },
 });
 
