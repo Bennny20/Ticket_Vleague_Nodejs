@@ -41,7 +41,7 @@ app.use("/api/clubs", clubRoute);
 app.use("/api/matchs", matchRoute);
 app.use("/api/stands", standRoute);
 app.use("/api/match/ticketTypes", ticketTypeRoute);
-app.use("/api/order/", orderRoute);
+app.use("/api/order", orderRoute);
 
 
 
