@@ -9,17 +9,25 @@ const OrderSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  address: {
+    type: String,
+    require: true,
+  },
+  phone: {
+    type: String,
+    require: true,
+  },
   date: {
     type: Date,
     require: true,
   },
   quantity: {
     type: Number,
-    require: true,
+    default: 0,
   },
   totalPrice: {
     type: Number,
-    require: true,
+    default: 0,
   },
   orderDeatails: {
     type: [String],
