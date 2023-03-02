@@ -1,13 +1,21 @@
 import OrderDetail from "../model/OrderDetail.js";
 import Order from "../model/Order.js";
 import TicketType from "../model/TicketType.js";
+import { createError } from "../utils/error.js";
 
 export const createOrderDetail = async (req, res, next) => {
   const newOrderDetail = new OrderDetail(req.body);
   const ticket = await TicketType.findById(req.body.ticketTypeId);
+  var quantityTicket = ticket.quantity - req.body.amount;
+  z;
+  if (ticket.quantity < 1) {
+    return next(createError(401, "Tickets are sold out"));
+  }
+  if (quantityTicket < 0) {
+    return next(createError(401, "Only " + ticket.quantity + " tickets left"));
+  }
 
   newOrderDetail.total = ticket.price * newOrderDetail.amount;
-
   try {
     const saveOrderDetail = await newOrderDetail.save();
     try {
@@ -31,8 +39,56 @@ export const createOrderDetail = async (req, res, next) => {
       },
       { new: true }
     );
+    //update quantity TicketType
+    var statusTicket = ticket.status;
+    if (quantityTicket == 0) {
+      statusTicket = false;
+    }
+    await TicketType.findByIdAndUpdate(
+      req.body.ticketTypeId,
+      {
+        quantity: quantityTicket,
+        status: statusTicket,
+      },
+      { new: true }
+    );
+
     res.status(200).json(saveOrderDetail);
   } catch (error) {
     next(error);
   }
 };
+
+export const getByOrder = async (req, res, next) => {
+  try {
+    const order = await Order.findById(req.params.orderId);
+    const listOrderDetail = await Promise.all(
+      order.orderDeatails.map((orderDetail) => {
+        return OrderDetail.findById(orderDetail);
+      })
+    );
+    res.status(200).json(listOrderDetail);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getOrderDetail = async (req, res, next) => {
+  try {
+    const orderDetail = await OrderDetail.find();
+    res.status(200).json(orderDetail);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getById = async (req, res, next) => {
+  try {
+    const orderDetail = await OrderDetail.findById(req.params.id);
+    res.status(200).json(orderDetail);
+  } catch (err) {
+    next(err);
+  }
+};
+
+

@@ -21,3 +21,22 @@ export const createOrder = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const getOrder = async (req, res, next) => {
+  try {
+    const order = await Order.find();
+    res.status(200).json(order);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getById = async (req, res, next) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    res.status(200).json(order);
+  } catch (err) {
+    next(err);
+  }
+};
