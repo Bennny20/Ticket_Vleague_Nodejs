@@ -20,6 +20,7 @@ router.delete("/:id", vertifyUser, deleteUser);
 //Get
 router.get("/:id", vertifyUser, getUser);
 //Get all
-router.get("/", vertifyAdmin, getUsers);
-
+// router.get("/", vertifyAdmin, getUsers);
+//
+router.get("/", getUsers);
 export default router;
