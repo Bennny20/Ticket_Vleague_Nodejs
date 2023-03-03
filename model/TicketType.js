@@ -5,7 +5,11 @@ const TikcetTypeSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
-  stand: {
+  standId: {
+    type: String,
+    require: true,
+  },
+  nameStand: {
     type: String,
     require: true,
   },

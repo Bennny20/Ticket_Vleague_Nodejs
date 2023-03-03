@@ -9,6 +9,10 @@ const clubSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  nameStadium: {
+    type: String,
+    require: true,
+  },
   logo: {
     type: String,
     require: true,

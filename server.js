@@ -37,11 +37,11 @@ app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/tournaments", tournamentRoute);
 app.use("/api/rounds", roundRoute);
-app.use("/api/stadium", stadiumRoute);
+app.use("/api/stadiums", stadiumRoute);
 app.use("/api/clubs", clubRoute);
-app.use("/api/matchs", matchRoute);
+app.use("/api/matches", matchRoute);
 app.use("/api/stands", standRoute);
-app.use("/api/match/ticketTypes", ticketTypeRoute);
+app.use("/api/match/tickets", ticketTypeRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/orderDetail", orderDetailRoute);
 

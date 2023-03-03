@@ -3,11 +3,12 @@ import Stadium from "../model/Stadium.js";
 
 export const createClub = async (req, res, next) => {
   const newClub = new Club(req.body);
-  const stadiumId = req.body.stadiumId;
+  const stadium = await Stadium.findById(req.body.stadiumId);
+  newClub.nameStadium = stadium.name;
   try {
     const saveClub = await newClub.save();
     try {
-      await Stadium.findByIdAndUpdate(stadiumId, {
+      await Stadium.findByIdAndUpdate(stadium._id, {
         $push: { Clubs: saveClub._id },
       });
     } catch (error) {
@@ -31,30 +32,38 @@ export const getClub = async (req, res, next) => {
 export const updateClub = async (req, res, next) => {
   try {
     const clubOid = await Club.findById(req.params.id);
-    const stadiumIdOld = clubOid.stadiumId;
-    const stadiumId = req.body.stadiumId;
+    const nameStaiumOld = clubOid.nameStadium;
+    
+    //update stadium.clubs 
+    if (req.body.stadiumId != undefined) {
+      const stadiumIdOld = clubOid.stadiumId;
+      const stadium = await Stadium.findById(req.body.stadiumId);
+      nameStaiumOld = stadium.name;
 
+      //update clubs old in stadium.Clubs
+      try {
+        await Stadium.findByIdAndUpdate(stadiumIdOld, {
+          $pull: { Clubs: updateClub._id },
+        });
+      } catch (error) {
+        next(error);
+      }
+
+      try {
+        await Stadium.findByIdAndUpdate(stadium._id, {
+          $push: { Clubs: updateClub._id },
+        });
+      } catch (error) {
+        next(error);
+      }
+    }
+
+    //Update club
     const updateClub = await Club.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: req.body, nameStadium: stadium.name },
       { new: true }
     );
-
-    try {
-      await Stadium.findByIdAndUpdate(stadiumIdOld, {
-        $pull: { Clubs: updateClub._id },
-      });
-    } catch (error) {
-      next(error);
-    }
-
-    try {
-      await Stadium.findByIdAndUpdate(stadiumId, {
-        $push: { Clubs: updateClub._id },
-      });
-    } catch (error) {
-      next(error);
-    }
     res.status(200).json(updateClub);
   } catch (error) {
     next(error);
