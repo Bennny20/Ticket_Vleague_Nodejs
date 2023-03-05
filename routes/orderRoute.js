@@ -4,9 +4,9 @@ import { createOrder, getOrder, getById, deleteOrder } from "../Controller/order
 
 const router = express.Router();
 
-router.post("/", vertifyAdmin, createOrder);
+router.post("/", createOrder);
 router.get("/", getOrder);
 router.get("/:id", getById);
-router.delete("/:id", vertifyAdmin, deleteOrder);
+router.delete("/:id", deleteOrder);
 
 export default router;

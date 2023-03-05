@@ -4,7 +4,7 @@ import { createOrderDetail, getById, getByOrder, getOrderDetail } from "../Contr
 
 const router = express.Router();
 
-router.post("/", vertifyAdmin, createOrderDetail);
+router.post("/", createOrderDetail);
 router.get("/order/:orderId", getByOrder);
 router.get("/", getOrderDetail);
 router.get("/:id", getById);
