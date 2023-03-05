@@ -43,7 +43,7 @@ export const deleteOrder = async (req, res, next) => {
     const orderDetail = await OrderDetail.findById(x);
     const ticket = await TicketType.findById(orderDetail.ticketTypeId);
     const refundTicket = ticket.quantity + orderDetail.amount;
- 
+
     await TicketType.findByIdAndUpdate(
       orderDetail.ticketTypeId,
       {
@@ -77,6 +77,22 @@ export const getById = async (req, res, next) => {
   try {
     const order = await Order.findById(req.params.id);
     res.status(200).json(order);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getByUser = async (req, res, next) => {
+  const userId = req.params.id;
+  try {
+    const orders = await Order.find();
+    var listOrderByUser = [];
+    for (let index = 0; index < orders.length; index++) {
+      if (orders[index].customerId === userId) {
+        listOrderByUser.push(orders[index]);
+      }
+    }
+    res.status(200).json(listOrderByUser);
   } catch (err) {
     next(err);
   }
