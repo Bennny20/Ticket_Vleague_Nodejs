@@ -7,7 +7,7 @@ export const createOrderDetail = async (req, res, next) => {
   const newOrderDetail = new OrderDetail(req.body);
   const ticket = await TicketType.findById(req.body.ticketTypeId);
   var quantityTicket = ticket.quantity - req.body.amount;
-  z;
+
   if (ticket.quantity < 1) {
     return next(createError(401, "Tickets are sold out"));
   }

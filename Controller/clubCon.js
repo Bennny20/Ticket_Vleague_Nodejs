@@ -30,20 +30,19 @@ export const getClub = async (req, res, next) => {
 };
 
 export const updateClub = async (req, res, next) => {
+  const clubOid = await Club.findById(req.params.id);
+  var nameStaium = clubOid.nameStadium;
   try {
-    const clubOid = await Club.findById(req.params.id);
-    const nameStaiumOld = clubOid.nameStadium;
-    
-    //update stadium.clubs 
+    //update stadium.clubs
     if (req.body.stadiumId != undefined) {
       const stadiumIdOld = clubOid.stadiumId;
       const stadium = await Stadium.findById(req.body.stadiumId);
-      nameStaiumOld = stadium.name;
+      nameStaium = stadium.name;
 
-      //update clubs old in stadium.Clubs
+      // update clubs old in stadium.Clubs
       try {
         await Stadium.findByIdAndUpdate(stadiumIdOld, {
-          $pull: { Clubs: updateClub._id },
+          $pull: { Clubs: clubOid._id },
         });
       } catch (error) {
         next(error);
@@ -51,17 +50,15 @@ export const updateClub = async (req, res, next) => {
 
       try {
         await Stadium.findByIdAndUpdate(stadium._id, {
-          $push: { Clubs: updateClub._id },
+          $push: { Clubs: clubOid._id },
         });
       } catch (error) {
         next(error);
       }
     }
-
-    //Update club
     const updateClub = await Club.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body, nameStadium: stadium.name },
+      { $set: req.body, nameStadium: nameStaium },
       { new: true }
     );
     res.status(200).json(updateClub);
@@ -77,7 +74,7 @@ export const deleteClub = async (req, res, next) => {
     await Club.findByIdAndDelete(req.params.id);
     try {
       await Stadium.findByIdAndUpdate(stadiumId, {
-        $pull: { Clubs: club._id },
+        $pull: { Clubs: req.params.id },
       });
     } catch (error) {
       next(error);

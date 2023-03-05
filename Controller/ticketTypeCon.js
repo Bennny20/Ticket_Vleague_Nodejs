@@ -5,7 +5,8 @@ import { createError } from "../utils/error.js";
 
 export const createTicketType = async (req, res, next) => {
   const newTicketType = new TicketType(req.body);
-  const stand = await Stand.findById(newTicketType.stand);
+  const stand = await Stand.findById(req.body.standId);
+  newTicketType.nameStand = stand.name;
 
   try {
     if (stand.quantitySeat < newTicketType.quantity) {
@@ -15,18 +16,18 @@ export const createTicketType = async (req, res, next) => {
           "The quantity of tickets is more than the number of seats"
         )
       );
-    } else {
-      newTicketType.matchId = req.params.matchId;
-      const saveTicketType = await newTicketType.save();
-      try {
-        await Match.findByIdAndUpdate(req.params.matchId, {
-          $push: { ticketTypes: saveTicketType._id },
-        });
-      } catch (error) {
-        next(error);
-      }   
-      res.status(200).json(saveTicketType);
     }
+    
+    newTicketType.matchId = req.params.matchId;
+    const saveTicketType = await newTicketType.save();
+    try {
+      await Match.findByIdAndUpdate(req.params.matchId, {
+        $push: { ticketTypes: saveTicketType._id },
+      });
+    } catch (error) {
+      next(error);
+    }
+    res.status(200).json(saveTicketType);
   } catch (error) {
     next(error);
   }
@@ -34,20 +35,39 @@ export const createTicketType = async (req, res, next) => {
 
 export const updateTicketType = async (req, res, next) => {
   const ticketType = await TicketType.findById(req.params.id);
-  const stand = await Stand.findById(ticketType.stand);
-
-  if (req.body.quantity != undefined) {
-    if (stand.quantitySeat < req.body.quantity) {
-      return next(
-        createError(
-          401,
-          "The quantity of tickets is more than the number of seats"
-        )
+  const stand = await Stand.findById(req.body.standId);
+  try {
+    //update req.body.standId != undefined
+    if (req.body.standId != undefined && req.body.quantity == undefined) {
+      ticketType.nameStand = stand.name;
+      if (stand.quantitySeat < ticketType.quantity) {
+        return next(
+          createError(
+            401,
+            "The quantity of tickets is more than the number of seats"
+          )
+        );
+      }
+      await TicketType.findByIdAndUpdate(
+        req.params.id,
+        { standId: stand._id, nameStand: stand.name },
+        { new: true }
       );
     }
-  }
 
-  try {
+    //check update quantity
+    if (req.body.quantity != undefined && req.body.standId == undefined) {
+      const stand = await Stand.findById(ticketType.standId);
+      if (stand.quantitySeat < req.body.quantity) {
+        return next(
+          createError(
+            401,
+            "The quantity of tickets is more than the number of seats"
+          )
+        );
+      }
+    }
+
     const updateTicketType = await TicketType.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },
@@ -81,7 +101,6 @@ export const getByMatch = async (req, res, next) => {
     next(err);
   }
 };
-
 
 export const getById = async (req, res, next) => {
   try {
