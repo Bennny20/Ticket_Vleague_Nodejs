@@ -20,7 +20,7 @@ const URL = `mongodb+srv://PhienTQ:Phiengk20@cluster0.aa1zf9y.mongodb.net/?retry
 const app = express();
 dotenv.config();
 
-app.use(cors())
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 const connect = async () => {
   try {
     mongoose.set("strictQuery", false);
