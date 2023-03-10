@@ -91,4 +91,18 @@ export const getById = async (req, res, next) => {
   }
 };
 
-
+export const getByUser = async (req, res, next) => {
+  const userId = req.params.userId;
+  var orderDetail = [];
+  try {
+    const orders = await Order.find({ customerId: userId });
+    for (var order of orders) {
+      for (var id of order.orderDeatails) {
+        orderDetail.push(await OrderDetail.findById(id));
+      }
+    }
+    res.status(200).json(orderDetail);
+  } catch (err) {
+    next(err);
+  }
+};

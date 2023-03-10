@@ -85,14 +85,8 @@ export const getById = async (req, res, next) => {
 export const getByUser = async (req, res, next) => {
   const userId = req.params.id;
   try {
-    const orders = await Order.find();
-    var listOrderByUser = [];
-    for (let index = 0; index < orders.length; index++) {
-      if (orders[index].customerId === userId) {
-        listOrderByUser.push(orders[index]);
-      }
-    }
-    res.status(200).json(listOrderByUser);
+    const orders = await Order.find({ customerId: userId });
+    res.status(200).json(orders);
   } catch (err) {
     next(err);
   }
