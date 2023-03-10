@@ -63,7 +63,7 @@ export const deleteStand = async (req, res, next) => {
       await Stand.findByIdAndDelete(req.params.id);
       try {
         await Stadium.findByIdAndUpdate(stadiumId, {
-          $pull: { Stands: Stand._id },
+          $pull: { Stands: req.params.id },
         });
       } catch (error) {
         next(error);
