@@ -20,7 +20,7 @@ const URL = `mongodb+srv://PhienTQ:Phiengk20@cluster0.aa1zf9y.mongodb.net/?retry
 const app = express();
 dotenv.config();
 
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 const connect = async () => {
   try {
     mongoose.set("strictQuery", false);
@@ -44,8 +44,7 @@ app.use("/api/stands", standRoute);
 app.use("/api/match/tickets", ticketTypeRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/orderDetail", orderDetailRoute);
-
-
+app.use("/uploads", express.static("uploads"));
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;
@@ -57,7 +56,6 @@ app.use((err, req, res, next) => {
     stack: err.stack,
   });
 });
-
 
 app.listen(8800, () => {
   connect();
