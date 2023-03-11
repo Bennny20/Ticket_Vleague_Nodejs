@@ -51,5 +51,14 @@ export const getRoundByTournament = async (req, res, next) => {
   }
 };
 
+export const getRound = async (req, res, next) => {
+  try {
+    const round = await Round.findById(req.params.id);
+    res.status(200).json(round);
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 
