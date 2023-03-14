@@ -1,12 +1,12 @@
 import Club from "../model/Club.js";
 import Stadium from "../model/Stadium.js";
+import { createError } from "./../utils/error.js";
+import Match from "../model/Match.js";
 
 export const createClub = async (req, res, next) => {
   const newClub = new Club(req.body);
   const stadium = await Stadium.findById(req.body.stadiumId);
-  // newClub.nameStadium = stadium.name;
-  newClub.logo = req.file.path;
-  // console.log(req.file);
+  newClub.nameStadium = stadium.name;
   try {
     const saveClub = await newClub.save();
     try {
@@ -58,13 +58,6 @@ export const updateClub = async (req, res, next) => {
         next(error);
       }
     }
-    if (req.file) {
-      await Club.findByIdAndUpdate(
-        req.params.id,
-        { logo: req.file.path },
-        { new: true }
-      );
-    }
 
     const updateClub = await Club.findByIdAndUpdate(
       req.params.id,
@@ -101,5 +94,20 @@ export const getAllClub = async (req, res, next) => {
     res.status(200).json(club);
   } catch (error) {
     next(error);
+  }
+};
+
+export const checkDelete = async (req, res, next) => {
+  const matchs = await Match.find({ homeClubId: req.params.id });
+  if (matchs.length > 0) {
+    return next(
+      createError(401, "Can not delete this club. Club have match will play")
+    );
+  }
+  const match2 = await Match.find({ awayClubId: req.params.id });
+  if (match2.length > 0) {
+    return next(
+      createError(401, "Can not delete this club. Club have match will play")
+    );
   }
 };
