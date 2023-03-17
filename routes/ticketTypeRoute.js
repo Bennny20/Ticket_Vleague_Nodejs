@@ -1,6 +1,7 @@
 import express from "express";
 import { vertifyAdmin } from "./../utils/vertifyToken.js";
 import {
+  checkDelete,
   createTicketType,
   deleteTicketType,
   getById,

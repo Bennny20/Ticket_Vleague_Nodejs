@@ -1,6 +1,7 @@
 import TicketType from "../model/TicketType.js";
 import Stand from "../model/Stand.js";
 import Match from "../model/Match.js";
+import OrderDetail from "../model/OrderDetail.js";
 import { createError } from "../utils/error.js";
 
 export const createTicketType = async (req, res, next) => {
@@ -17,7 +18,7 @@ export const createTicketType = async (req, res, next) => {
         )
       );
     }
-    
+
     newTicketType.matchId = req.params.matchId;
     const saveTicketType = await newTicketType.save();
     try {
@@ -80,7 +81,22 @@ export const updateTicketType = async (req, res, next) => {
 };
 
 export const deleteTicketType = async (req, res, next) => {
+  const orderDetail = await OrderDetail.find({ ticketTypeId: req.params.id });
+  if (orderDetail.length > 0) {
+    return next(
+      createError(401, "Can not delete this ticket. Have user buy this ticket")
+    );
+  }
+
   try {
+    const ticket = await TicketType.findById(req.params.id);
+    try {
+      await Match.findByIdAndUpdate(ticket.matchId, {
+        $pull: { ticketTypes: req.params.id },
+      });
+    } catch (error) {
+      next(error);
+    }
     await TicketType.findByIdAndDelete(req.params.id);
     res.status(200).json("TicketType has been delete");
   } catch (error) {
@@ -117,5 +133,14 @@ export const getAll = async (req, res, next) => {
     res.status(200).json(ticketTypes);
   } catch (err) {
     next(err);
+  }
+};
+
+export const checkDelete = async (req, res, next) => {
+  const orderDetail = await OrderDetail.find({ ticketTypeId: req.params.id });
+  if (orderDetail.length > 0) {
+    return next(
+      createError(401, "Can not delete this ticket. Have user buy this ticket")
+    );
   }
 };
