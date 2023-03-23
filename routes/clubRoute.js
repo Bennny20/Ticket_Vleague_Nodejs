@@ -11,7 +11,7 @@ import { vertifyAdmin } from "./../utils/vertifyToken.js";
 
 const router = express.Router();
 
-router.post("/", vertifyAdmin, createClub);
+router.post("/", createClub);
 router.put("/:id", vertifyAdmin, updateClub);
 router.delete("/:id", vertifyAdmin, checkDelete, deleteClub);
 router.get("/:id", getClub);

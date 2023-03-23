@@ -51,21 +51,21 @@ export const updateMatch = async (req, res, next) => {
       { new: true }
     );
 
-    try {
-      await Round.findByIdAndUpdate(roundOld, {
-        $pull: { matchs: updateMatch._id },
-      });
-    } catch (error) {
-      next(error);
-    }
+    // try {
+    //   await Round.findByIdAndUpdate(roundOld, {
+    //     $pull: { matchs: updateMatch._id },
+    //   });
+    // } catch (error) {
+    //   next(error);
+    // }
 
-    try {
-      await Round.findByIdAndUpdate(roundNewId, {
-        $push: { matchs: updateMatch._id },
-      });
-    } catch (error) {
-      next(error);
-    }
+    // try {
+    //   await Round.findByIdAndUpdate(roundNewId, {
+    //     $push: { matchs: updateMatch._id },
+    //   });
+    // } catch (error) {
+    //   next(error);
+    // }
     res.status(200).json(updateMatch);
   } catch (error) {
     next(error);
