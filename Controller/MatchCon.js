@@ -2,6 +2,36 @@ import Match from "../model/Match.js";
 import Round from "../model/Round.js";
 import Club from "../model/Club.js";
 import Stafium from "../model/Stadium.js";
+import { createError } from "./../utils/error.js";
+
+export const checkCreate = async (req, res, next) => {
+  const round = await Round.findById(req.body.roundId);
+  const newMatch = new Match(req.body);
+
+  const matches = await Promise.all(
+    round.matchs.map((match) => {
+      return Match.findById(match);
+    })
+  );
+
+  if (req.body.homeClubId === req.body.awayClubId) {
+    return next(createError(401, "Club home and club away need to different"));
+  }
+
+  for (var match of matches) {
+    if (
+      req.body.homeClubId === match.homeClubId ||
+      req.body.homeClubId === match.awayClubId
+    ) {
+      return next(createError(401, "Club home had play match in this round"));
+    } else if (
+      req.body.awayClubId === match.homeClubId ||
+      req.body.awayClubId === match.awayClubId
+    ) {
+      return next(createError(401, "Club away had play match in this round"));
+    } else console.log("Check oke");
+  }
+};
 
 export const createMatch = async (req, res, next) => {
   const newMatch = new Match(req.body);
@@ -13,7 +43,7 @@ export const createMatch = async (req, res, next) => {
   newMatch.nameAwayClub = awayClub.name;
   newMatch.logoAwayClub = awayClub.logo;
   newMatch.nameStadium = stadium.name;
-  
+
   try {
     const saveMatch = await newMatch.save();
     try {
