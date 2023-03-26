@@ -6,7 +6,6 @@ import { createError } from "./../utils/error.js";
 
 export const checkCreate = async (req, res, next) => {
   const round = await Round.findById(req.body.roundId);
-  const newMatch = new Match(req.body);
 
   const matches = await Promise.all(
     round.matchs.map((match) => {
@@ -29,7 +28,7 @@ export const checkCreate = async (req, res, next) => {
       req.body.awayClubId === match.awayClubId
     ) {
       return next(createError(401, "Club away had play match in this round"));
-    } else console.log("Check oke");
+    }
   }
 };
 
@@ -43,6 +42,33 @@ export const createMatch = async (req, res, next) => {
   newMatch.nameAwayClub = awayClub.name;
   newMatch.logoAwayClub = awayClub.logo;
   newMatch.nameStadium = stadium.name;
+
+  //Check map
+  const round = await Round.findById(req.body.roundId);
+
+  const matches = await Promise.all(
+    round.matchs.map((match) => {
+      return Match.findById(match);
+    })
+  );
+
+  if (req.body.homeClubId === req.body.awayClubId) {
+    return next(createError(401, "Club home and club away need to different"));
+  }
+
+  for (var match of matches) {
+    if (
+      req.body.homeClubId === match.homeClubId ||
+      req.body.homeClubId === match.awayClubId
+    ) {
+      return next(createError(401, "Club home had play match in this round"));
+    } else if (
+      req.body.awayClubId === match.homeClubId ||
+      req.body.awayClubId === match.awayClubId
+    ) {
+      return next(createError(401, "Club away had play match in this round"));
+    }
+  }
 
   try {
     const saveMatch = await newMatch.save();
@@ -67,6 +93,40 @@ export const updateMatch = async (req, res, next) => {
     const homeClub = await Club.findById(req.body.homeClubId);
     const awayClub = await Club.findById(req.body.awayClubId);
     const stadium = await Stafium.findById(req.body.stadiumId);
+
+    if (req.body.homeClubId != undefined || req.body.awayClubId != undefined) {
+      const round = await Round.findById(matchOid.roundId);
+
+      const matches = await Promise.all(
+        round.matchs.map((match) => {
+          return Match.findById(match);
+        })
+      );
+
+      if (req.body.homeClubId === req.body.awayClubId) {
+        return next(
+          createError(401, "Club home and club away need to different")
+        );
+      }
+
+      for (var match of matches) {
+        if (
+          req.body.homeClubId === match.homeClubId ||
+          req.body.homeClubId === match.awayClubId
+        ) {
+          return next(
+            createError(401, "Club home had play match in this round")
+          );
+        } else if (
+          req.body.awayClubId === match.homeClubId ||
+          req.body.awayClubId === match.awayClubId
+        ) {
+          return next(
+            createError(401, "Club away had play match in this round")
+          );
+        }
+      }
+    }
 
     const updateMatch = await Match.findByIdAndUpdate(
       req.params.id,
