@@ -4,6 +4,7 @@ import {
   updateUser,
   getUser,
   getUsers,
+  updateUserRole,
 } from "../Controller/UserCon.js";
 import {
   vertifyToken,
@@ -15,12 +16,10 @@ const router = express.Router();
 
 //Update
 router.put("/:id", vertifyUser, updateUser);
+router.put("/:id", vertifyUser, updateUserRole);
 //Delete
-router.delete("/:id", vertifyUser, deleteUser);
+router.delete("/:id", vertifyAdmin, deleteUser);
 //Get
 router.get("/:id", vertifyUser, getUser);
-//Get all
-// router.get("/", vertifyAdmin, getUsers);
-//
 router.get("/", getUsers);
 export default router;
