@@ -9,6 +9,26 @@ export const createTicketType = async (req, res, next) => {
   const stand = await Stand.findById(req.body.standId);
   newTicketType.nameStand = stand.name;
 
+  const tickets = await TicketType.find({ matchId: req.params.matchId });
+  let quantity = stand.quantitySeat;
+
+  for (var ticket of tickets) {
+    if (ticket.nameStand == stand.name) {
+      quantity -= ticket.quantity;
+    }
+  }
+
+  if (quantity < req.body.quantity) {
+    return next(
+      createError(
+        401,
+        "This stand has created tickets with only " +
+          quantity +
+          " seats left for this stand"
+      )
+    );
+  }
+
   try {
     if (stand.quantitySeat < newTicketType.quantity) {
       return next(
@@ -37,6 +57,7 @@ export const createTicketType = async (req, res, next) => {
 export const updateTicketType = async (req, res, next) => {
   const ticketType = await TicketType.findById(req.params.id);
   const stand = await Stand.findById(req.body.standId);
+  
   try {
     //update req.body.standId != undefined
     if (req.body.standId != undefined && req.body.quantity == undefined) {
