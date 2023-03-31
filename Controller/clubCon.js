@@ -71,6 +71,18 @@ export const updateClub = async (req, res, next) => {
 };
 
 export const deleteClub = async (req, res, next) => {
+  const matchs = await Match.find({ homeClubId: req.params.id });
+  if (matchs.length > 0) {
+    return next(
+      createError(401, "Can not delete this club. Club have match will play")
+    );
+  }
+  const match2 = await Match.find({ awayClubId: req.params.id });
+  if (match2.length > 0) {
+    return next(
+      createError(401, "Can not delete this club. Club have match will play")
+    );
+  }
   try {
     const club = await Club.findById(req.params.id);
     const stadiumId = club.stadiumId;
