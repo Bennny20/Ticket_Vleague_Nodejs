@@ -1,4 +1,6 @@
 import User from "../model/User.js";
+import bcrypt from "bcrypt";
+import { createError } from "./../utils/error.js";
 
 export const updateUser = async (req, res, next) => {
   const salt = bcrypt.genSaltSync(10);
