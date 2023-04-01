@@ -91,3 +91,16 @@ export const getByUser = async (req, res, next) => {
     next(err);
   }
 };
+
+export const totalPrice = async (req, res, next) => {
+  try {
+    const orders = await Order.find();
+    var total = 0;
+    for (var order of orders) {
+      total = total + order.totalPrice;
+    }
+    console.log(total);
+  } catch (err) {
+    next(err);
+  }
+};
