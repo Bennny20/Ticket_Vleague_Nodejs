@@ -99,7 +99,7 @@ export const totalPrice = async (req, res, next) => {
     for (var order of orders) {
       total = total + order.totalPrice;
     }
-    console.log(total);
+    res.status(200).json(total);
   } catch (err) {
     next(err);
   }
